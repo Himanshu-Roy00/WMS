@@ -1,0 +1,246 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var lowStock = ViewBag.LowStockProducts as List<WMS.Models.Product>;
+    var recentIn = ViewBag.RecentStockIn as List<WMS.Models.StockIn>;
+    var recentOut = ViewBag.RecentStockOut as List<WMS.Models.StockOut>;
+    var warehouseStock = ViewBag.WarehouseStock as List<WMS.Models.ProductStock>;
+}
+
+<!-- Top Stats Cards -->
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card card-custom bg-primary text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white">Total Products</h6>
+                    <h2 class="text-white font-weight-bold">@ViewBag.TotalProducts</h2>
+                </div>
+                <i class="flaticon2-box-1 display-4 text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card card-custom bg-success text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white">Total Warehouses</h6>
+                    <h2 class="text-white font-weight-bold">@ViewBag.TotalWarehouses</h2>
+                </div>
+                <i class="flaticon2-architecture-and-city display-4 text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card card-custom bg-info text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white">Total Stock In</h6>
+                    <h2 class="text-white font-weight-bold">@ViewBag.TotalStockIn</h2>
+                </div>
+                <i class="flaticon2-download display-4 text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card card-custom bg-warning text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white">Total Stock Out</h6>
+                    <h2 class="text-white font-weight-bold">@ViewBag.TotalStockOut</h2>
+                </div>
+                <i class="flaticon2-upload display-4 text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Total Transfers Card -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card card-custom bg-danger text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white">Total Transfers</h6>
+                    <h2 class="text-white font-weight-bold">@ViewBag.TotalTransfers</h2>
+                </div>
+                <i class="flaticon2-reload display-4 text-white opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Low Stock Alert -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card card-custom">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label text-danger">
+                        ⚠️ Low Stock Alert
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (lowStock != null && lowStock.Count > 0)
+                {
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Current Qty</th>
+                                <th>Min Level</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int c = 1;
+                            }
+                            @foreach (var item in lowStock)
+                            {
+                                <tr>
+                                    <td>@c</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.Category?.CategoryName</td>
+                                    <td class="text-danger font-weight-bold">@item.Quantity</td>
+                                    <td>@item.MinStockLevel</td>
+                                    <td><span class="badge badge-danger">Low Stock</span></td>
+                                </tr>
+                                c++;
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-success font-weight-bold">✅ All products have sufficient stock!</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Stock In & Out -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Recent Stock In</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Supplier</th>
+                            <th>Qty</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (recentIn != null)
+                        {
+                            @foreach (var item in recentIn)
+                            {
+                                <tr>
+                                    <td>@item.Product?.ProductName</td>
+                                    <td>@item.Supplier?.Name</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Date.ToShortDateString()</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Recent Stock Out</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Issued To</th>
+                            <th>Qty</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (recentOut != null)
+                        {
+                            @foreach (var item in recentOut)
+                            {
+                                <tr>
+                                    <td>@item.Product?.ProductName</td>
+                                    <td>@item.IssuedTo</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Date.ToShortDateString()</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Warehouse Stock -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-custom">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Warehouse Stock Summary</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Warehouse</th>
+                            <th>Quantity</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (warehouseStock != null)
+                        {
+                            int wc = 1;
+                            @foreach (var item in warehouseStock)
+                            {
+                                <tr>
+                                    <td>@wc</td>
+                                    <td>@item.Product?.ProductName</td>
+                                    <td>@item.Warehouse?.Name</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.LastUpdated.ToShortDateString()</td>
+                                </tr>
+                                wc++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

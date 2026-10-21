@@ -1,0 +1,68 @@
+﻿@model List<WMS.Models.ProductTransfer>
+
+@{
+    ViewData["Title"] = "Transfer Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Transfer Report</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>From Location</th>
+                    <th>To Location</th>
+                    <th>Total Products</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.FromLocation</td>
+                            <td>@item.ToLocation</td>
+                            <td>@(item.Details?.Count ?? 0)</td>
+                            <td>@item.Date.ToShortDateString()</td>
+                            <td>
+                                @if (item.Status == "Completed")
+                                {
+                                    <span class="badge badge-success">
+                                        Completed
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">
+                                        Pending
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6"
+                            class="text-center text-danger">
+                            No Transfer Records Found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+﻿@model WMS.Models.Product
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="modal position-relative d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Ye hai abhi -->
+                <form asp-action="Add" asp-controller="Product" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+
+                        <input type="text"
+                               name="ProductName"
+                               class="form-control"
+                               placeholder="Enter product name"
+                               required />
+                    </div>
+
+                    <!-- ✅ Ye lagao -->
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="CategoryId" class="form-control" required>
+                            <option value="">-- Select Category --</option>
+                            @foreach (var cat in ViewBag.CategoryList)
+                            {
+                                <option value="@cat.Value">@cat.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">UOM</label>
+                        <select name="UOMId" class="form-control" required>
+                            <option value="">-- Select UOM --</option>
+                            @foreach (var uom in ViewBag.UOMList)
+                            {
+                                <option value="@uom.Value">@uom.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+
+                        <input type="number"
+                               name="Quantity"
+                               class="form-control"
+                               placeholder="Enter quantity"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Min Stock Level</label>
+
+                        <input type="number"
+                               name="MinStockLevel"
+                               class="form-control"
+                               placeholder="Enter minimum stock level"
+                               required />
+                    </div>
+                    <input type="hidden"
+                           id="ProductId"
+                           name="ProductId" />
+
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit" class="btn btn-primary">
+                            Save Product
+                        </button>
+
+                        <a href="/Product/Index" class="btn btn-secondary">
+                            Back
+                        </a>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,230 @@
+﻿@model List<WMS.Models.UOM>
+
+@{
+    ViewData["Title"] = "UOM Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+
+    <div class="card-header flex-wrap border-0 pt-6 pb-0">
+        <div class="card-title">
+            <h3 class="card-label">
+                UOM Management
+                <span class="d-block text-muted pt-2 font-size-sm">
+                    Manage all Units Of Measurement
+                </span>
+            </h3>
+        </div>
+
+        <div class="card-toolbar">
+            <button type="button"
+                    class="btn btn-primary font-weight-bolder"
+                    onclick="openAddModal()">
+                Add UOM
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>UOM Name</th>
+                    <th>Short Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.UOMName</td>
+                            <td>@item.ShortName</td>
+
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge badge-success">
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">
+                                        Inactive
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+
+                                <button type="button"
+                                        class="btn btn-warning btn-sm"
+                                        onclick="openEditModal('@item.UOMId',
+                                    '@item.UOMName',
+                                    '@item.ShortName',
+                                    '@item.IsActive')">
+                                    Edit
+                                </button>
+
+                                <a href="/UOM/Delete/@item.UOMId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure?')">
+                                    Delete
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5"
+                            class="text-center text-danger">
+                            No UOM Found
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="uomModal"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="modalTitle">
+                    UOM
+                </h5>
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form method="post"
+                      id="uomForm">
+
+                    <input type="hidden"
+                           id="UOMId"
+                           name="UOMId" />
+
+                    <div class="form-group">
+                        <label>UOM Name</label>
+
+                        <input type="text"
+                               id="UOMName"
+                               name="UOMName"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Short Name</label>
+
+                        <input type="text"
+                               id="ShortName"
+                               name="ShortName"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Status</label>
+
+                        <select id="IsActive"
+                                name="IsActive"
+                                class="form-control">
+
+                            <option value="true">
+                                Active
+                            </option>
+
+                            <option value="false">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function openAddModal() {
+
+        $("#UOMId").val('');
+        $("#UOMName").val('');
+        $("#ShortName").val('');
+        $("#IsActive").val('true');
+
+        $("#uomForm").attr("action", "/UOM/Add");
+
+        $("#modalTitle").text("Add UOM");
+
+        $("#uomModal").modal('show');
+    }
+
+    function openEditModal(id, name, shortName, isActive) {
+
+        $("#UOMId").val(id);
+        $("#UOMName").val(name);
+        $("#ShortName").val(shortName);
+        $("#IsActive").val(isActive.toString());
+
+        $("#uomForm").attr("action", "/UOM/Edit");
+
+        $("#modalTitle").text("Edit UOM");
+
+        $("#uomModal").modal('show');
+    }
+
+</script>

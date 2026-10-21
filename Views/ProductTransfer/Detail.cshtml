@@ -1,0 +1,120 @@
+﻿@model List<WMS.Models.ProductTransferDetail>
+
+@{
+    ViewData["Title"] = "Transfer Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom mb-5">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Transfer Detail</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-primary"
+                    onclick="openAddModal()">
+                Add Product
+            </button>
+            <a href="/ProductTransfer/ProductTransfer"
+                   class="btn btn-secondary ml-2">
+                Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.Product?.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>
+                                <a href="/ProductTransfer/DeleteDetail?detailId=@item.DetailId&transferId=@item.ProductTransferId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Delete karna chahte ho?')">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-danger">
+                            No Products Added Yet
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Product</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/ProductTransfer/AddDetail">
+
+                    <input type="hidden"
+                           name="ProductTransferId"
+                           value="@ViewBag.TransferId" />
+
+                    <div class="form-group">
+                        <label>Product</label>
+                        <select name="ProductId"
+                                class="form-control" required>
+                            <option value="">-- Select Product --</option>
+                            @foreach (var item in ViewBag.ProductList)
+                            {
+                                <option value="@item.Value">
+                                    @item.Text
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="Quantity"
+                               class="form-control" required min="1" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        $("#detailModal").modal('show');
+    }
+</script>

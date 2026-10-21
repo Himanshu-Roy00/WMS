@@ -1,0 +1,331 @@
+﻿@model List<WMS.Models.StockIn>
+
+@{
+    ViewData["Title"] = "Stock In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+
+    <div class="card-header border-0 pt-6 pb-4">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="card-title">
+                <h3 class="card-label">Stock In Management</h3>
+            </div>
+            <div class="card-toolbar d-flex align-items-center">
+                <form method="get" action="/StockIn/StockIn" class="d-flex align-items-center mr-3">
+                    <input type="text"
+                           name="search"
+                           value="@ViewBag.Search"
+                           class="form-control mr-2"
+                           placeholder="Search product..."
+                           style="width:200px;" />
+                    <button type="submit"
+                            class="btn btn-light-primary font-weight-bolder">
+                        Search
+                    </button>
+                    @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+                    {
+                        <a href="/StockIn/StockIn"
+                               class="btn btn-light-danger font-weight-bolder ml-2">
+                            Clear
+                        </a>
+                    }
+                </form>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="openAddModal()">
+                    Add Stock In
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Warehouse</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+
+                    foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@count</td>
+
+                            <td>@item.Product?.ProductName</td>
+
+                            <td>@item.Supplier?.Name</td>
+
+                            <td>@item.Warehouse?.Name</td>
+
+                            <td>@item.Quantity</td>
+
+                            <td>@item.PurchasePrice</td>
+
+                            <td>@item.Date.ToShortDateString()</td>
+
+                            <td>
+
+                                <button class="btn btn-warning btn-sm"
+                                        onclick="openEditModal('@item.Id',
+                                    '@item.ProductId',
+                                    '@item.SupplierId',
+                                    '@item.WarehouseId',
+                                    '@item.Quantity',
+                                    '@item.PurchasePrice',
+                                    '@item.Remarks')">
+
+                                    Edit
+
+                                </button>
+
+                                <a href="/StockIn/Delete/@item.Id"
+                                       class="btn btn-danger btn-sm">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        count++;
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="stockInModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="modalTitle">
+
+                    Stock In
+
+                </h5>
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+
+                    <span>&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form method="post"
+                      id="stockInForm">
+
+                    <input type="hidden"
+                           id="Id"
+                           name="Id" />
+
+                    <div class="form-group">
+
+                        <label>Product</label>
+
+                        <select id="ProductId"
+                                name="ProductId"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Select Product --
+                            </option>
+
+                            @foreach (var item in ViewBag.ProductList)
+                            {
+                                <option value="@item.Value">
+                                    @item.Text
+                                </option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Supplier</label>
+
+                        <select id="SupplierId"
+                                name="SupplierId"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Select Supplier --
+                            </option>
+
+                            @foreach (var item in ViewBag.SupplierList)
+                            {
+                                <option value="@item.Value">
+                                    @item.Text
+                                </option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Warehouse</label>
+
+                        <select id="WarehouseId"
+                                name="WarehouseId"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Select Warehouse --
+                            </option>
+
+                            @foreach (var item in ViewBag.WarehouseList)
+                            {
+                                <option value="@item.Value">
+                                    @item.Text
+                                </option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Quantity</label>
+
+                        <input type="number"
+                               id="Quantity"
+                               name="Quantity"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Purchase Price</label>
+
+                        <input type="number"
+                               step="0.01"
+                               id="PurchasePrice"
+                               name="PurchasePrice"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Remarks</label>
+
+                        <textarea id="Remarks"
+                                  name="Remarks"
+                                  class="form-control"></textarea>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Save
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function openAddModal() {
+
+        $("#Id").val('');
+        $("#ProductId").val('');
+        $("#SupplierId").val('');
+        $("#WarehouseId").val('');
+        $("#Quantity").val('');
+        $("#PurchasePrice").val('');
+        $("#Remarks").val('');
+
+        $("#stockInForm").attr("action", "/StockIn/Add");
+
+        $("#modalTitle").text("Add Stock In");
+
+        $("#stockInModal").modal('show');
+    }
+
+    function openEditModal(id,
+                           productId,
+                           supplierId,
+                           warehouseId,
+                           quantity,
+                           purchasePrice,
+                           remarks) {
+
+        $("#Id").val(id);
+        $("#ProductId").val(productId);
+        $("#SupplierId").val(supplierId);
+        $("#WarehouseId").val(warehouseId);
+        $("#Quantity").val(quantity);
+        $("#PurchasePrice").val(purchasePrice);
+        $("#Remarks").val(remarks);
+
+        $("#stockInForm").attr("action", "/StockIn/Edit");
+
+        $("#modalTitle").text("Edit Stock In");
+
+        $("#stockInModal").modal('show');
+    }
+
+</script>

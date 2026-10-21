@@ -1,0 +1,66 @@
+﻿@model List<WMS.Models.ProductStock>
+
+@{
+    ViewData["Title"] = "Stock Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Stock Report</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Warehouse</th>
+                    <th>Quantity</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.Product?.ProductName</td>
+                            <td>@item.Warehouse?.Name</td>
+                            <td>
+                                @if (item.Quantity <= 10)
+                                {
+                                    <span class="badge badge-danger">
+                                        @item.Quantity (Low!)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">
+                                        @item.Quantity
+                                    </span>
+                                }
+                            </td>
+                            <td>@item.LastUpdated.ToShortDateString()</td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5"
+                            class="text-center text-danger">
+                            No Stock Found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

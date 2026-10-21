@@ -1,0 +1,159 @@
+﻿@model List<WMS.Models.ProductTransfer>
+
+@{
+    ViewData["Title"] = "Product Transfer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Product Transfer Management</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-primary"
+                    onclick="openAddModal()">
+                Add Transfer
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>From Location</th>
+                    <th>To Location</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.FromLocation</td>
+                            <td>@item.ToLocation</td>
+                            <td>@item.Date.ToShortDateString()</td>
+                            <td>
+                                @if (item.Status == "Completed")
+                                {
+                                    <span class="badge badge-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">Pending</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="/ProductTransfer/Detail/@item.ProductTransferId"
+                                       class="btn btn-info btn-sm">
+                                    Details
+                                </a>
+                                <button class="btn btn-warning btn-sm"
+                                        onclick="openEditModal(
+                                    '@item.ProductTransferId',
+                                    '@item.FromLocation',
+                                    '@item.ToLocation',
+                                    '@item.Status')">
+                                    Edit
+                                </button>
+                                <a href="/ProductTransfer/Delete/@item.ProductTransferId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Delete karna chahte ho?')">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">
+                            No Transfers Found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="transferModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add Transfer</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="transferForm">
+
+                    <input type="hidden" id="ProductTransferId"
+                           name="ProductTransferId" />
+
+                    <div class="form-group">
+                        <label>From Location</label>
+                        <input type="text" id="FromLocation"
+                               name="FromLocation"
+                               class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>To Location</label>
+                        <input type="text" id="ToLocation"
+                               name="ToLocation"
+                               class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="Status" name="Status"
+                                class="form-control" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        $("#ProductTransferId").val('');
+        $("#FromLocation").val('');
+        $("#ToLocation").val('');
+        $("#Status").val('Pending');
+        $("#transferForm").attr("action", "/ProductTransfer/Add");
+        $("#modalTitle").text("Add Transfer");
+        $("#transferModal").modal('show');
+    }
+
+    function openEditModal(id, fromLocation, toLocation, status) {
+        $("#ProductTransferId").val(id);
+        $("#FromLocation").val(fromLocation);
+        $("#ToLocation").val(toLocation);
+        $("#Status").val(status);
+        $("#transferForm").attr("action", "/ProductTransfer/Edit");
+        $("#modalTitle").text("Edit Transfer");
+        $("#transferModal").modal('show');
+    }
+</script>

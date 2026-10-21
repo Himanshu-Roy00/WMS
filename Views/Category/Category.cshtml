@@ -1,0 +1,194 @@
+﻿@model List<WMS.Models.Category>
+
+@{
+    ViewData["Title"] = "Category Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+
+    <div class="card-header flex-wrap border-0 pt-6 pb-0">
+
+        <div class="card-title">
+
+            <h3 class="card-label">
+                Category Management
+                <span class="d-block text-muted pt-2 font-size-sm">
+                    Manage all your categories
+                </span>
+            </h3>
+
+        </div>
+
+        <div class="card-toolbar">
+
+            <button type="button"
+                    class="btn btn-primary font-weight-bolder"
+                    onclick="openAddModal()">
+                Add Category
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>Category Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+
+                    foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@count</td>
+
+                            <td>@item.CategoryName</td>
+
+                            <td>
+
+                                <!-- EDIT -->
+                                <button type="button"
+                                        class="btn btn-warning btn-sm"
+                                        onclick="openEditModal(
+                                    '@item.CategoryId',
+                                    '@item.CategoryName'
+                                    )">
+                                    Edit
+                                </button>
+
+                                <!-- DELETE -->
+                                <a href="/Category/Delete/@item.CategoryId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure?')">
+                                    Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center text-danger">
+                            No Categories Found
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="categoryModal"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="modalTitle">
+                    Add Category
+                </h5>
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form method="post" id="categoryForm">
+
+                    <!-- HIDDEN ID -->
+                    <input type="hidden"
+                           id="CategoryId"
+                           name="CategoryId" />
+
+                    <!-- CATEGORY NAME -->
+                    <div class="form-group">
+
+                        <label>Category Name</label>
+
+                        <input type="text"
+                               id="CategoryName"
+                               name="CategoryName"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Category
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    // OPEN ADD MODAL
+    function openAddModal() {
+
+        $("#CategoryId").val('');
+        $("#CategoryName").val('');
+
+        $("#categoryForm").attr("action", "/Category/Add");
+
+        $("#modalTitle").text("Add Category");
+
+        $("#categoryModal").modal('show');
+    }
+
+    // OPEN EDIT MODAL
+    function openEditModal(id, name) {
+
+        $("#CategoryId").val(id);
+        $("#CategoryName").val(name);
+
+        $("#categoryForm").attr("action", "/Category/Edit");
+
+        $("#modalTitle").text("Edit Category");
+
+        $("#categoryModal").modal('show');
+    }
+
+</script>

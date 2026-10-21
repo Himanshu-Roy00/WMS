@@ -1,0 +1,222 @@
+﻿@model WMS.Models.User
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+
+            body {
+                overflow-x: hidden;
+                background-color: #f8f2e5;
+            }
+
+            .top-banner {
+                background-color: #0e2207d5;
+                height: 250px;
+            }
+
+            .register-box {
+                background-color: #0e2207;
+                border-radius: 35px;
+            }
+
+            .form-control,
+            .form-select {
+                height: 55px;
+                border: none;
+                border-radius: 12px;
+                padding-left: 15px;
+            }
+
+            textarea.form-control {
+                height: 100px !important;
+            }
+
+            .register-btn {
+                background-color: #f8a01d;
+                color: white;
+                font-weight: bold;
+                border-radius: 15px;
+                padding: 12px;
+            }
+
+                .register-btn:hover {
+                    background-color: #e28d12;
+                    color: white;
+                }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Banner -->
+
+    <div class="container-fluid top-banner">
+
+        <div class="text-center pt-5">
+
+            <div class="d-inline-block px-5 py-3 text-light rounded-pill"
+                 style="background-color:#ffffff3f; margin-top:40px;">
+
+                <a href="/"
+                       class="text-decoration-none text-white">
+
+                    Home
+
+                </a>
+
+                &nbsp;&nbsp;/&nbsp;&nbsp;Registration
+
+            </div>
+
+            <h1 class="display-4 fw-bold text-white mt-4">
+                Warehouse Management System
+            </h1>
+
+        </div>
+
+    </div>
+
+    <!-- Register Section -->
+
+    <div class="container-fluid mt-5">
+
+        <div class="row">
+
+            <div class="col-sm-10 mx-auto register-box shadow-lg p-5"
+                >
+
+                <div class="row">
+
+                    <!-- Left Side -->
+
+                    <div class="col-md-6 text-center">
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                             class="img-fluid"
+                             style="max-height:500px;" />
+
+                    </div>
+
+                    <!-- Right Side -->
+
+                    <div class="col-md-6">
+
+                        <h1 class="display-4 text-white fw-bold">
+                            Registration
+                        </h1>
+
+                        <p class="text-light mb-5">
+                            Create your warehouse account to manage
+                            inventory, products and stock easily.
+                        </p>
+
+                        <form asp-action="Register" method="post">
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-4">
+
+                                    <input asp-for="Name"
+                                           class="form-control"
+                                           placeholder="Your Name" />
+
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+
+                                    <input asp-for="Email"
+                                           type="email"
+                                           class="form-control"
+                                           placeholder="Your Email" />
+
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+
+                                    <input asp-for="Password"
+                                           type="password"
+                                           class="form-control"
+                                           placeholder="Password" />
+
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+
+                                    <select asp-for="Role"
+                                            class="form-select">
+
+                                        <option value="">
+                                            Select Role
+                                        </option>
+
+                                        <option value="Admin">
+                                            Admin
+                                        </option>
+
+                                        <option value="User">
+                                            User
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-12 mt-4 text-center">
+
+                                    <button type="submit"
+                                            class="btn register-btn w-50">
+
+                                        Register
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                        <p class="text-center text-light mt-5">
+
+                            Already have an account ?
+
+                            <a asp-action="Login"
+                                   class="text-warning fw-bold text-decoration-none">
+
+                                Login Here
+
+                            </a>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

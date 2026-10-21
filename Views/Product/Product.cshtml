@@ -1,0 +1,195 @@
+﻿@model List<WMS.Models.Product>
+
+@{
+    ViewData["Title"] = "Product Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+
+    <div class="card-header border-0 pt-6 pb-4">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="card-title">
+                <h3 class="card-label">
+                    Product Management
+                    <span class="d-block text-muted pt-2 font-size-sm">
+                        Manage all your products
+                    </span>
+                </h3>
+            </div>
+            <div class="d-flex align-items-center">
+                <form method="get" action="/Product/Product" class="d-flex mr-3">
+                    <input type="text"
+                           name="search"
+                           value="@ViewBag.Search"
+                           class="form-control mr-2"
+                           placeholder="Search product..." />
+                    <button type="submit"
+                            class="btn btn-light-primary font-weight-bolder">
+                        Search
+                    </button>
+                    @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+                    {
+                        <a href="/Product/Product"
+                               class="btn btn-light-danger font-weight-bolder ml-2">
+                            Clear
+                        </a>
+                    }
+                </form>
+               <button type="button"
+        class="btn btn-primary font-weight-bolder"
+        style="height:38px;"
+        onclick="openAddModal()">
+    Add Product
+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Min Stock</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Category?.CategoryName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.MinStockLevel</td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-warning btn-sm"
+                                        onclick="openEditModal('@item.ProductId','@item.ProductName','@item.CategoryId','@item.Quantity','@item.MinStockLevel')">
+                                    Edit
+                                </button>
+                                <a href="/Product/Delete/@item.ProductId"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure?')">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">
+                            No Products Found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Product</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <i class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" method="post">
+                    <input type="hidden" id="ProductId" name="ProductId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" id="ProductName" name="ProductName"
+                               class="form-control" placeholder="Enter product name" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select id="CategoryId" name="CategoryId" class="form-control" required>
+                            <option value="">-- Select Category --</option>
+                            @foreach (var cat in ViewBag.CategoryList)
+                            {
+                                <option value="@cat.Value">@cat.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">UOM</label>
+                        <select id="UOMId" name="UOMId" class="form-control" required>
+                            <option value="">-- Select UOM --</option>
+                            @foreach (var uom in ViewBag.UOMList)
+                            {
+                                <option value="@uom.Value">@uom.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" id="Quantity" name="Quantity"
+                               class="form-control" placeholder="Enter quantity" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Min Stock Level</label>
+                        <input type="number" id="MinStockLevel" name="MinStockLevel"
+                               class="form-control" placeholder="Enter min stock level" required />
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Product</button>
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        function openAddModal() {
+        $("#ProductId").val('');
+        $("#ProductName").val('');
+        $("#CategoryId").val('');
+        $("#UOMId").val('');        // ← Yeh add karo
+        $("#Quantity").val('');
+        $("#MinStockLevel").val('');
+
+        $("#productForm").attr("action", "/Product/Add");
+        $("#modalTitle").text("Add Product");
+        $("#productModal").modal('show');
+    }
+
+    function openEditModal(id, name, categoryId, uomId, quantity, minStockLevel) {
+        $("#ProductId").val(id);
+        $("#ProductName").val(name);
+        $("#CategoryId").val(categoryId);
+        $("#UOMId").val(uomId);     // ← Yeh add karo
+        $("#Quantity").val(quantity);
+        $("#MinStockLevel").val(minStockLevel);
+
+        $("#productForm").attr("action", "/Product/Edit");
+        $("#modalTitle").text("Edit Product");
+        $("#productModal").modal('show');
+    }
+</script>

@@ -1,0 +1,249 @@
+﻿@model List<WMS.Models.Warehouse>
+
+@{
+    ViewData["Title"] = "Warehouse Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-custom">
+
+    <div class="card-header flex-wrap border-0 pt-6 pb-0">
+
+        <div class="card-title">
+
+            <h3 class="card-label">
+
+                Warehouse Management
+
+                <span class="d-block text-muted pt-2 font-size-sm">
+                    Manage all warehouses
+                </span>
+
+            </h3>
+
+        </div>
+
+        <div class="card-toolbar">
+
+            <button type="button"
+                    class="btn btn-primary font-weight-bolder"
+                    onclick="openAddModal()">
+
+                Add Warehouse
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="thead-light">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Warehouse Name</th>
+                    <th>Location</th>
+                    <th>Capacity</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+
+                    foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@count</td>
+
+                            <td>@item.Name</td>
+
+                            <td>@item.Location</td>
+
+                            <td>@item.Capacity</td>
+
+                            <td>
+
+                                <button type="button"
+                                        class="btn btn-warning btn-sm"
+                                        onclick="openEditModal('@item.Id',
+                                    '@item.Name',
+                                    '@item.Location',
+                                    '@item.Capacity')">
+
+                                    Edit
+
+                                </button>
+
+                                <a href="/Warehouse/Delete/@item.Id"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure?')">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+
+                        <td colspan="5"
+                            class="text-center text-danger">
+
+                            No Warehouses Found
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="warehouseModal"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog"
+         role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="modalTitle">
+
+                    Warehouse
+
+                </h5>
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+
+                    <span>&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form method="post"
+                      id="warehouseForm">
+
+                    <input type="hidden"
+                           id="Id"
+                           name="Id" />
+
+                    <div class="form-group">
+
+                        <label>Warehouse Name</label>
+
+                        <input type="text"
+                               id="Name"
+                               name="Name"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Location</label>
+
+                        <input type="text"
+                               id="Location"
+                               name="Location"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Capacity</label>
+
+                        <input type="number"
+                               id="Capacity"
+                               name="Capacity"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Save
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function openAddModal() {
+
+        $("#Id").val('');
+        $("#Name").val('');
+        $("#Location").val('');
+        $("#Capacity").val('');
+
+        $("#warehouseForm").attr("action", "/Warehouse/Add");
+
+        $("#modalTitle").text("Add Warehouse");
+
+        $("#warehouseModal").modal('show');
+    }
+
+    function openEditModal(id, name, location, capacity) {
+
+        $("#Id").val(id);
+        $("#Name").val(name);
+        $("#Location").val(location);
+        $("#Capacity").val(capacity);
+
+        $("#warehouseForm").attr("action", "/Warehouse/Edit");
+
+        $("#modalTitle").text("Edit Warehouse");
+
+        $("#warehouseModal").modal('show');
+    }
+
+</script>
